@@ -7,7 +7,7 @@ from config import OPENAI_API_KEY
 openai.api_key =OPENAI_API_KEY
 
 messages = [
-    {"role": "system", "content": "You are an active listener. You should reply like Jay-z."}]
+    {"role": "system", "content": "You are an active listener. Respond as if you were a rapper Jay-z."}]
 
 def transcribe(audio):
     global messages
