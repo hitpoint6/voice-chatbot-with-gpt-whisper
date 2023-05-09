@@ -1,13 +1,32 @@
 import gradio as gr
 import openai
 import subprocess
-import gtts
-from config import OPENAI_API_KEY
+from config import OPENAI_API_KEY, ELEVEN_LABS_API_KEY, SAMATHA_VOICE, RACHEL_VOICE, YUE_VOICE
+import requests
 
-openai.api_key =OPENAI_API_KEY
+openai.api_key = OPENAI_API_KEY
 
 messages = [
-    {"role": "system", "content": "You are an active listener. Respond as if you were a rapper Jay-z."}]
+    {"role": "system", "content": "You are an active listener."}]
+
+def assistant_speak(content):
+        # text to speech request with eleven labs
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{YUE_VOICE}/stream"
+    data = {
+        "text": content,
+        "voice_settings": {
+            "stability": 0.1,
+            "similarity_boost": 0.8
+        }
+    }
+    r = requests.post(url, headers={'xi-api-key': ELEVEN_LABS_API_KEY}, json=data)
+
+    output_filename = "assistant_message.mp3"
+    with open(output_filename, "wb") as output:
+        output.write(r.content)
+    
+    subprocess.call(["afplay", "assistant_message.mp3"])
+
 
 def transcribe(audio):
     global messages
@@ -23,9 +42,10 @@ def transcribe(audio):
 
     assistant_message = response["choices"][0]["message"]["content"]
 
-    tts = gtts.gTTS(assistant_message, lang='en')
-    tts.save("assistant_message.mp3")
-    subprocess.call(["afplay", "assistant_message.mp3"])
+    # tts = gtts.gTTS(assistant_message, lang='en')
+    # tts.save("assistant_message.mp3")
+    # subprocess.call(["afplay", "assistant_message.mp3"])
+    assistant_speak(assistant_message)
     messages.append({"role": "assistant", "content": assistant_message})
 
     chat_transcript = ""
@@ -38,4 +58,4 @@ def transcribe(audio):
 ui = gr.Interface(fn=transcribe, inputs=gr.Audio(
     source="microphone", type="filepath"), outputs="text")
 
-ui.launch()
+ui.launch(debug=True)
