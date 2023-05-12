@@ -1,7 +1,7 @@
 import gradio as gr
 import openai
 import subprocess
-from config import OPENAI_API_KEY, ELEVEN_LABS_API_KEY, SAMATHA_VOICE, RACHEL_VOICE, YUE_VOICE
+from config import OPENAI_API_KEY, ELEVEN_LABS_API_KEY, SAMATHA_VOICE
 import requests
 
 openai.api_key = OPENAI_API_KEY
@@ -42,9 +42,6 @@ def transcribe(audio):
 
     assistant_message = response["choices"][0]["message"]["content"]
 
-    # tts = gtts.gTTS(assistant_message, lang='en')
-    # tts.save("assistant_message.mp3")
-    # subprocess.call(["afplay", "assistant_message.mp3"])
     assistant_speak(assistant_message)
     messages.append({"role": "assistant", "content": assistant_message})
 
