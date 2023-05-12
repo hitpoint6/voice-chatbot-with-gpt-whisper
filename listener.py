@@ -11,7 +11,7 @@ messages = [
 
 def assistant_speak(content):
         # text to speech request with eleven labs
-    url = f"https://api.elevenlabs.io/v1/text-to-speech/{YUE_VOICE}/stream"
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{SAMATHA_VOICE}/stream"
     data = {
         "text": content,
         "voice_settings": {
